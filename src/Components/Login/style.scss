@@ -1,0 +1,28 @@
+@import "../../Utils/Colors.scss";
+
+.ui-login {
+  min-height: 100vh;
+  .login-theme-background {
+    background: url("../../Assets/material-background.svg") no-repeat left bottom;
+    background-color: $theme-pink;
+    background-size: cover;
+  }
+  .login-container {
+    padding: 20px;
+    .login-form-container {
+      min-height: 100%;
+      .login-header {
+        &:after {
+          border-bottom: 4px solid $theme-blue;
+          display: block;
+          content: "";
+          position: absolute;
+          width: 40px;
+        }
+      }
+      .user-input-control {
+        margin-bottom: 20px;
+      }
+    }
+  }
+}

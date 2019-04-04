@@ -69,7 +69,7 @@ const config = {
         }
       }]
     }, {
-      test: /\.(eot|svg|otf|ttf|woff|woff2)$/,
+      test: /\.(eot|otf|ttf|woff|woff2)$/,
       use: [
         "file-loader"
       ]
