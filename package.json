@@ -1,15 +1,17 @@
 {
-  "name": "mad-message-ui",
+  "name": "mad-message",
   "version": "1.0.1",
-  "description": "Mad Message UI",
-  "main": "./src/index.js",
+  "description": "Mad Message",
+  "main": "./client/index.js",
   "scripts": {
     "webpack-dev-server": "webpack-dev-server",
     "webpack": "webpack --config webpack.production.js",
+    "server": "nodemon server/app.js",
     "dev": "grunt dev",
-    "build": "grunt build"
+    "build": "grunt build",
+    "lint": "eslint ."
   },
-  "repository": "git+https://github.com/praveenkumar-outlook/mad-message-ui.git",
+  "repository": "git+https://github.com/praveenkumar-outlook/mad-message.git",
   "keywords": [
     "webpack",
     "react",
@@ -18,9 +20,9 @@
   "author": "Praveenkumar K <praveen.ece@outlook.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/praveenkumar-outlook/mad-message-ui/issues"
+    "url": "https://github.com/praveenkumar-outlook/mad-message/issues"
   },
-  "homepage": "https://github.com/praveenkumar-outlook/mad-message-ui#readme",
+  "homepage": "https://github.com/praveenkumar-outlook/mad-message#readme",
   "devDependencies": {
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -37,6 +39,7 @@
     "grunt-webpack": "^3.1.2",
     "html-webpack-plugin": "^3.2.0",
     "node-sass": "^4.9.3",
+    "nodemon": "^1.18.10",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.22.1",
     "webpack": "^4.29.3",
@@ -47,6 +50,10 @@
     "@material-ui/core": "^3.9.3",
     "axios": "^0.18.0",
     "bootstrap": "^3.3.7",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "http-errors": "^1.7.2",
+    "morgan": "^1.9.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",

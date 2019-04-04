@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const config = {
   entry: {
-    app: path.join(__dirname, "src/index.js")
+    app: path.join(__dirname, "client/index.js")
   },
   output: {
     path: path.join(__dirname, "public"),
@@ -18,7 +18,7 @@ const config = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: path.join(__dirname, "public/index.html"),
-      template: path.join(__dirname, "src/index.html")
+      template: path.join(__dirname, "client/index.html")
     }),
     new webpack.HotModuleReplacementPlugin()
   ],
