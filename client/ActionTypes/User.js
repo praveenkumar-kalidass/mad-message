@@ -1,0 +1,4 @@
+export default {
+  START_USER_LOADING: "START_USER_LOADING",
+  LOAD_USERS: "LOAD_USERS"
+};

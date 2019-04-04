@@ -6,7 +6,7 @@ const config = {
     app: path.join(__dirname, "client/index.js")
   },
   output: {
-    path: path.join(__dirname, "public"),
+    path: path.join(__dirname, "dist"),
     hashDigestLength: 10,
     filename: "scripts/[name].[hash].bundle.js"
   },
@@ -16,7 +16,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      filename: path.join(__dirname, "public/index.html"),
+      filename: path.join(__dirname, "dist/index.html"),
       template: path.join(__dirname, "client/index.html")
     })
   ],

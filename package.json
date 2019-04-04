@@ -9,6 +9,12 @@
     "server": "nodemon server/app.js",
     "dev": "grunt dev",
     "build": "grunt build",
+    "migrate": "sequelize db:migrate",
+    "migration-create": "sequelize migration:create",
+    "migrate-undo": "sequelize db:migrate:undo",
+    "seed": "sequelize db:seed:all",
+    "seed-create": "sequelize seed:generate",
+    "seed-undo": "sequelize db:seed:undo:all",
     "lint": "eslint ."
   },
   "repository": "git+https://github.com/praveenkumar-outlook/mad-message.git",
@@ -41,6 +47,7 @@
     "node-sass": "^4.9.3",
     "nodemon": "^1.18.10",
     "sass-loader": "^7.1.0",
+    "sequelize-cli": "^5.4.0",
     "style-loader": "^0.22.1",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.0.8",
@@ -51,14 +58,20 @@
     "axios": "^0.18.0",
     "bootstrap": "^3.3.7",
     "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "http-errors": "^1.7.2",
+    "lodash": "^4.17.11",
     "morgan": "^1.9.1",
+    "pg": "^7.9.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "sequelize": "^4.43.1",
+    "universal-cookie": "^3.1.0",
+    "uuid": "^3.3.2"
   }
 }

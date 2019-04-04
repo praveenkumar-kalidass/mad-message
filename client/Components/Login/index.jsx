@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   Hidden,
@@ -10,13 +11,39 @@ import {
   Select,
   Typography
 } from "@material-ui/core";
+import {connect} from "react-redux";
+import _ from "lodash";
+import Cookies from "universal-cookie";
+import {getUserList} from "../../Actions/User";
 import "./style.scss";
 
-export default class Login extends Component {
+const mapStateToProps = (state) => ({
+  loading: state.user.loading,
+  users: state.user.users
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  getUserList: () => { dispatch(getUserList()) }
+});
+
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+      users: [],
       userId: ""
+    };
+  }
+
+  componentDidMount() {
+    this.props.getUserList();
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    return {
+      loading: props.loading,
+      users: props.users
     };
   }
 
@@ -26,8 +53,21 @@ export default class Login extends Component {
     });
   }
 
+  handleSubmit = (event) => {
+    event.preventDefault();
+    if (this.state.userId) {
+      const cookies = new Cookies();
+      cookies.set("mad", {
+        userId: this.state.userId
+      });
+      this.props.history.push("/");
+    }
+  }
+
   render() {
     const {
+      loading,
+      users,
       userId
     } = this.state;
 
@@ -40,41 +80,58 @@ export default class Login extends Component {
             className="login-container">
             <Grid container direction="column" justify="center"
               className="login-form-container">
-              <Grid item ms={12} sm={12} md={12}>
-                <Typography className="login-header"
-                  variant="h4" gutterBottom>
-                  Login
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <FormControl variant="outlined" fullWidth
-                  className="user-input-control">
-                  <InputLabel htmlFor="user-id">
-                    Login with a user
-                  </InputLabel>
-                  <Select
-                    value={userId}
-                    onChange={this.handleChange("userId")}
-                    input={
-                      <OutlinedInput
-                        labelWidth={150}
-                        id="user-id" />
-                    }>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={12} md={12}>
-                <Grid container justify="flex-end">
+              {
+                loading ?
+                <Grid container justify="center">
                   <Grid item>
-                    <Button variant="contained" color="primary">
-                      Login
-                    </Button>
+                    <CircularProgress />
                   </Grid>
-                </Grid>
-              </Grid>
+                </Grid> :
+                <form onSubmit={this.handleSubmit} autoComplete="off">
+                  <Grid item ms={12} sm={12} md={12}>
+                    <Typography className="login-header" variant="h4">
+                      Login
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <FormControl variant="outlined" fullWidth
+                      className="user-input-control">
+                      <InputLabel htmlFor="user-id">
+                        Login with a user
+                      </InputLabel>
+                      <Select
+                        required
+                        value={userId}
+                        onChange={this.handleChange("userId")}
+                        input={
+                          <OutlinedInput
+                            labelWidth={150}
+                            id="user-id" />
+                        }>
+                        {
+                          _.map(users, (user) => (
+                            <MenuItem
+                              key={user.id}
+                              value={user.id}>
+                              {`${user.firstName} ${user.lastName}`}
+                            </MenuItem>
+                          ))
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={12}>
+                    <Grid container justify="flex-end">
+                      <Grid item>
+                        <Button variant="contained" color="primary"
+                          type="submit">
+                          Go
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </form>
+              }
             </Grid>
           </Grid>
         </Hidden>
@@ -82,3 +139,8 @@ export default class Login extends Component {
     );
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
