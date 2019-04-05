@@ -28,6 +28,16 @@ module.exports = {
             }
           }
         },
+        userId: {
+          type: Sequelize.UUID,
+          field: "user_id",
+          allowNull: false,
+          references: {
+            model: {
+              tableName: "User"
+            }
+          }
+        },
         createdAt: {
           type: Sequelize.DATE,
           field: "created_at",

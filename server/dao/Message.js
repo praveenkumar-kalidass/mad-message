@@ -23,6 +23,14 @@ class MessageDao {
       findCB(findErr)
     ));
   }
+
+  createMessage(data, createCB) {
+    models.Message.create(data).then((message) => (
+      createCB(null, message)
+    ), (createErr) => (
+      createCB(createErr)
+    ));
+  }
 }
 
 module.exports = MessageDao;

@@ -2,18 +2,25 @@
  * UI Routes configuration
  */
 import React, {Fragment} from "react";
-import {HashRouter as Router, Route} from "react-router-dom";
+import {HashRouter as Router, Switch, Route} from "react-router-dom";
 
 // App Components
 import App from "./Components/App";
+import Room from "./Components/Room";
 import Login from "./Components/Login";
 
 export default function routes() {
   return (
     <Router basename="/">
       <Fragment>
-        <Route exact path="/login" component={Login}></Route>
-        <Route exact path="/" component={App}></Route>
+        <Switch>
+          <Route exact path="/login" component={Login}></Route>
+          <Route path="/">
+            <App>
+              <Route exact path="/room/:id" component={Room}></Route>
+            </App>
+          </Route>
+        </Switch>
       </Fragment>
     </Router>
   );

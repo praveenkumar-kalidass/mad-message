@@ -76,6 +76,21 @@ class RoomService {
       return addCB(null, room);
     });
   }
+
+  getRoomDetails(id, getDetailsCB) {
+    async.parallel({
+      roomDetail: roomDao.findRoom.bind(null, id),
+      messages: messageService.getMessagesForRoom.bind(null, id)
+    }, (parallelErr, result) => {
+      if (parallelErr) {
+        return getDetailsCB(parallelErr);
+      }
+      return getDetailsCB(null, {
+        ...result.roomDetail.dataValues,
+        messages: result.messages
+      });
+    });
+  }
 }
 
 module.exports = RoomService;

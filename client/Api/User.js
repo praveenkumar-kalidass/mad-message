@@ -9,6 +9,6 @@ export default {
     axios.get(`${api}/api/user/all`)
   ),
   getRooms: (userId) => (
-    axios.get(`${api}/api/room/${userId}`)
+    axios.get(`${api}/api/room/list/${userId}`)
   )
 };

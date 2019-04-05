@@ -19,6 +19,15 @@ class MessageService {
       return getCB(null, messages);
     });
   }
+
+  saveMessage(data, saveCB) {
+    messageDao.createMessage(data, (createErr, message) => {
+      if (createErr) {
+        return saveCB(createErr);
+      }
+      return saveCB(null, message);
+    });
+  }
 }
 
 module.exports = MessageService;

@@ -14,9 +14,11 @@ import {
   Mail
 } from "@material-ui/icons";
 import {connect} from "react-redux";
+import {withRouter} from "react-router-dom";
 import Cookies from "universal-cookie";
 import _ from "lodash";
 import {getRooms} from "../../Actions/User";
+import "./style.scss";
 
 const mapStateToProps = (state) => ({
   loading: state.user.loading,
@@ -60,6 +62,10 @@ class Menu extends Component {
     };
   }
 
+  goToRoom = (roomId) => () => {
+    this.props.history.push(`/room/${roomId}`);
+  }
+
   render() {
     const {
       loading,
@@ -82,7 +88,11 @@ class Menu extends Component {
               </Grid>
             </ListItem> :
             _.map(groups, (group) => (
-              <ListItem key={group.id}>
+              <ListItem
+                key={group.id}
+                onClick={this.goToRoom(group.id)}
+                className="menu-item"
+                button>
                 <ListItemAvatar>
                   <Avatar>{group.name[0].toUpperCase()}</Avatar>
                 </ListItemAvatar>
@@ -108,7 +118,11 @@ class Menu extends Component {
               </Grid>
             </ListItem> :
             _.map(chats, (chat) => (
-              <ListItem key={chat.id}>
+              <ListItem
+                key={chat.id}
+                onClick={this.goToRoom(chat.id)}
+                className="menu-item"
+                button>
                 <ListItemAvatar>
                   <Avatar>{chat.name[0].toUpperCase()}</Avatar>
                 </ListItemAvatar>
@@ -126,7 +140,7 @@ class Menu extends Component {
   }
 }
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Menu);
+)(Menu));

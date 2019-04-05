@@ -1,0 +1,16 @@
+.gis-room {
+  height: calc(100% - 48px);
+  overflow: auto;
+  .messages-container {
+    min-height: calc(100% - 128px);
+    padding: 20px;
+    .message-chip {
+      margin-bottom: 10px;
+    }
+  }
+  .message-input-container {
+    bottom: 0;
+    max-height: 88px;
+    position: sticky;
+  }
+}

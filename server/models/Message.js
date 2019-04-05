@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       field: "room_id",
       allowNull: false
     },
+    userId: {
+      type: DataTypes.UUID,
+      field: "user_id",
+      allowNull: false
+    },
     createdAt: {
       type: DataTypes.DATE,
       field: "created_at"

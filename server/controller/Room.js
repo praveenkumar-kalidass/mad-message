@@ -3,7 +3,16 @@ const RoomService = require("../service/Room");
 const roomService = new RoomService();
 const router = express.Router();
 
-router.get("/:userId", (request, response) => {
+router.get("/:id", (request, response) => {
+  roomService.getRoomDetails(request.params.id, (getErr, result) => {
+    if (getErr) {
+      response.status(500).send(getErr);
+    }
+    response.send(result);
+  });
+});
+
+router.get("/list/:userId", (request, response) => {
   roomService.getUserRooms(request.params.userId, (getErr, result) => {
     if (getErr) {
       response.status(500).send(getErr);
