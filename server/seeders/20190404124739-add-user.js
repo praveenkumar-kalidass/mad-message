@@ -8,6 +8,11 @@ module.exports = {
       first_name: "Tony",
       last_name: "Stark",
       image: "/images/tony-stark.png"
+    }, {
+      id: uuidv4(),
+      first_name: "Steve",
+      last_name: "Rogers",
+      image: "/images/steve-rogers.jpg"
     }], {});
   },
 

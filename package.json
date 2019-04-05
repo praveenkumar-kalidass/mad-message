@@ -1,6 +1,6 @@
 {
   "name": "mad-message",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Mad Message",
   "main": "./client/index.js",
   "scripts": {
@@ -55,6 +55,8 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "async": "^2.6.1",
     "axios": "^0.18.0",
     "bootstrap": "^3.3.7",
     "cookie-parser": "^1.4.4",
