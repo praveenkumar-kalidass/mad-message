@@ -1,8 +1,10 @@
-import axios from "axios";
-const api = "http://localhost:3000";
+import axios from "./index";
 
 export default {
   getRoomDetails: (id) => (
-    axios.get(`${api}/api/room/${id}`)
+    axios.get(`/api/room/${id}`)
+  ),
+  postMessage: (data) => (
+    axios.post("/api/message", data)
   )
 };

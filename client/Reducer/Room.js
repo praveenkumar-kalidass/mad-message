@@ -21,6 +21,11 @@ export default (state = initialState, action) => {
       messages: action.data.messages,
       room: _.omit(action.data, ["messages"])
     };
+  case Room.LOAD_ROOM_MESSAGE:
+    return {
+      ...state,
+      messages: _.union(state.messages, [action.data])
+    };
   default:
     return state;
   }

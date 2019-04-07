@@ -1,14 +1,13 @@
-import axios from "axios";
-const api = "http://localhost:3000";
+import axios from "./index";
 
 export default {
   getUserDetail: (id) => (
-    axios.get(`${api}/api/user/${id}`)
+    axios.get(`/api/user/${id}`)
   ),
   getAllUsers: () => (
-    axios.get(`${api}/api/user/all`)
+    axios.get("/api/user/all")
   ),
   getRooms: (userId) => (
-    axios.get(`${api}/api/room/list/${userId}`)
+    axios.get(`/api/room/list/${userId}`)
   )
 };

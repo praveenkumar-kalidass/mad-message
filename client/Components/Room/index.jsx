@@ -10,7 +10,12 @@ import {Send} from "@material-ui/icons";
 import {connect} from "react-redux";
 import Cookies from "universal-cookie";
 import _ from "lodash";
-import {getRoomDetails} from "../../Actions/Room";
+import {
+  getRoomDetails,
+  startRoom,
+  stopRoom,
+  sendMessage
+} from "../../Actions/Room";
 import "./style.scss";
 
 const mapStateToProps = (state) => ({
@@ -20,7 +25,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getRoomDetails: (id) => { dispatch(getRoomDetails(id)) }
+  getRoomDetails: (id) => { dispatch(getRoomDetails(id)) },
+  startRoom: (id) => { dispatch(startRoom(id)) },
+  stopRoom: (id) => { dispatch(stopRoom(id)) },
+  sendMessage: (data) => { dispatch(sendMessage(data)) }
 });
 
 class Room extends Component {
@@ -28,6 +36,7 @@ class Room extends Component {
     super(props);
     this.state = {
       loading: true,
+      userId: "",
       room: {},
       messages: [],
       message: ""
@@ -40,6 +49,11 @@ class Room extends Component {
       userId: cookies.get("mad").userId
     });
     this.props.getRoomDetails(this.props.match.params.id);
+    this.props.startRoom(this.props.match.params.id);
+  }
+
+  componentWillUnmount() {
+    this.props.stopRoom(this.props.match.params.id);
   }
 
   static getDerivedStateFromProps(props) {
@@ -52,13 +66,27 @@ class Room extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.props.stopRoom(prevProps.match.params.id);
       this.props.getRoomDetails(this.props.match.params.id);
+      this.props.startRoom(this.props.match.params.id);
     }
   }
 
   handleChange = (field) => (event) => {
     this.setState({
       [field]: event.target.value
+    });
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.sendMessage({
+      userId: this.state.userId,
+      roomId: this.props.match.params.id,
+      text: this.state.message
+    });
+    this.setState({
+      message: ""
     });
   }
 
@@ -84,12 +112,12 @@ class Room extends Component {
             _.map(messages, (message) => (
               <Grid container
                 key={message.id}
-                justify={message.userId === userId ? "flex-start" : "flex-end"}>
+                justify={message.userId === userId ? "flex-end" : "flex-start"}>
                 <Grid item>
                   <Chip
                     className="message-chip"
                     label={message.text}
-                    color={message.userId === userId ? "default" : "primary"}>
+                    color={message.userId === userId ? "primary" : "default"}>
                   </Chip>
                 </Grid>
               </Grid>
@@ -99,23 +127,26 @@ class Room extends Component {
         <div className="message-input-container">
           {
             !loading &&
-            <Grid container alignItems="center">
-              <Grid item xs sm md>
-                <TextField
-                  placeholder="Enter your message"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  value={message}
-                  onChange={this.handleChange("message")}>
-                </TextField>
+            <form onSubmit={this.handleSubmit} autoComplete="off">
+              <Grid container alignItems="center">
+                <Grid item xs sm md>
+                  <TextField
+                    required
+                    placeholder="Enter your message"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    value={message}
+                    onChange={this.handleChange("message")}>
+                  </TextField>
+                </Grid>
+                <Grid item>
+                  <IconButton type="submit" variant="contained" color="primary">
+                    <Send />
+                  </IconButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <IconButton variant="contained" color="primary">
-                  <Send />
-                </IconButton>
-              </Grid>
-            </Grid>
+            </form>
           }
         </div>
       </div>

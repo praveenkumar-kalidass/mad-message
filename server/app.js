@@ -19,6 +19,10 @@ app.use(cors());
 
 app.use("/api", router);
 
+app.use("/socket.io", (request, response) => {
+  response.send("Socket Polling :: Service Active");
+});
+
 app.use((req, res, next) => {
   next(createError(404));
 });
@@ -42,6 +46,19 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 const server = http.createServer(app);
+
+const io = require("socket.io")(server);
+
+io.on("connection", (socket) => {
+  socket.on("subscribe", (roomId) => {
+    socket.join(roomId);
+  });
+  socket.on("unsubscribe", (roomId) => {
+    socket.leave(roomId);
+  });
+  app.locals.io = io;
+  app.locals.socket = socket;
+});
 
 server.listen(port);
 
@@ -79,3 +96,5 @@ const onListening = () => {
   console.log("Server Listening on " + bind);
 };
 server.on("listening", onListening);
+
+module.exports = app;

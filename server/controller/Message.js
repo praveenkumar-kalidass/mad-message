@@ -8,6 +8,7 @@ router.post("/", (request, response) => {
     if (saveErr) {
       response.status(500).send(saveErr);
     }
+    request.app.locals.io.to(result.roomId).emit("message", result);
     response.send(result);
   });
 });
