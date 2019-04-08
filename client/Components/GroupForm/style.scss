@@ -1,0 +1,9 @@
+.ui-group-form {
+  .input-component {
+    display: flex;
+    padding: 0;
+    .value-container {
+      flex: 1;
+    }
+  }
+}

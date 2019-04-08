@@ -2,9 +2,11 @@ const async = require("async");
 const RoomDao = require("../dao/Room");
 const MessageService = require("../service/Message");
 const MemberService = require("../service/Member");
+const UserService = require("../service/User");
 const roomDao = new RoomDao();
 const messageService = new MessageService();
 const memberService = new MemberService();
+const userService = new UserService();
 
 class RoomService {
   static loadRoomDetails(rooms, userId, loadDetailsCB) {
@@ -80,17 +82,45 @@ class RoomService {
     });
   }
 
+  static loadMembers(roomId, loadCB) {
+    async.waterfall([
+      async.apply(memberService.getRoomUsers, roomId, null),
+      (members, loadDetailsCB) => {
+        async.map(members, (member, asyncCB) => {
+          userService.getUser(member.userId, (userErr, user) => {
+            if (userErr) {
+              return asyncCB(userErr);
+            }
+            return asyncCB(null, user);
+          });
+        }, (mapErr, result) => {
+          if (mapErr) {
+            return loadDetailsCB(mapErr);
+          }
+          return loadDetailsCB(null, result);
+        });
+      }
+    ], (waterfallErr, result) => {
+      if (waterfallErr) {
+        return loadCB(waterfallErr);
+      }
+      return loadCB(null, result);
+    });
+  }
+
   getRoomDetails(id, getDetailsCB) {
     async.parallel({
       roomDetail: roomDao.findRoom.bind(null, id),
-      messages: messageService.getMessagesForRoom.bind(null, id)
+      messages: messageService.getMessagesForRoom.bind(null, id),
+      members: RoomService.loadMembers.bind(null, id)
     }, (parallelErr, result) => {
       if (parallelErr) {
         return getDetailsCB(parallelErr);
       }
       return getDetailsCB(null, {
         ...result.roomDetail.dataValues,
-        messages: result.messages
+        messages: result.messages,
+        members: result.members
       });
     });
   }

@@ -4,7 +4,8 @@ import _ from "lodash";
 const initialState = {
   loading: false,
   room: {},
-  messages: []
+  messages: [],
+  members: []
 };
 
 export default (state = initialState, action) => {
@@ -19,7 +20,8 @@ export default (state = initialState, action) => {
       ...state,
       loading: false,
       messages: action.data.messages,
-      room: _.omit(action.data, ["messages"])
+      members: action.data.members,
+      room: _.omit(action.data, ["messages", "members"])
     };
   case Room.LOAD_ROOM_MESSAGE:
     return {

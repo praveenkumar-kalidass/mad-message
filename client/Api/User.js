@@ -12,5 +12,8 @@ export default {
   ),
   updateMessages: (data) => (
     axios.post("/api/message/read", data)
+  ),
+  addRoom: (data) => (
+    axios.post("/api/room", data)
   )
 };

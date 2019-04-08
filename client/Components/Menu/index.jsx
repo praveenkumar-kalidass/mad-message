@@ -4,6 +4,7 @@ import {
   Chip,
   CircularProgress,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemAvatar,
@@ -11,7 +12,7 @@ import {
   ListSubheader
 } from "@material-ui/core";
 import {
-  Mail
+  Add
 } from "@material-ui/icons";
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
@@ -22,6 +23,8 @@ import {
   readMessages,
   startNotifications
 } from "../../Actions/User";
+import GroupForm from "../GroupForm";
+import ChatForm from "../ChatForm";
 import "./style.scss";
 
 const mapStateToProps = (state) => ({
@@ -42,6 +45,8 @@ class Menu extends Component {
     super(props);
     this.state = {
       loading: true,
+      groupForm: false,
+      chatForm: false,
       groups: [],
       chats: []
     };
@@ -76,9 +81,17 @@ class Menu extends Component {
     this.props.history.push(`/room/${room.id}`);
   }
 
+  handleForm = (form, value) => () => {
+    this.setState({
+      [form]: value
+    });
+  }
+
   render() {
     const {
       loading,
+      groupForm,
+      chatForm,
       groups,
       chats
     } = this.state;
@@ -87,7 +100,16 @@ class Menu extends Component {
       <div className="ui-menu">
         <List component="nav"
           subheader={
-            <ListSubheader component="div">Groups</ListSubheader>
+            <ListSubheader component="div">
+              <Grid container justify="space-between" alignItems="center">
+                <Grid item>Groups</Grid>
+                <Grid item>
+                  <IconButton onClick={this.handleForm("groupForm", true)}>
+                    <Add/>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </ListSubheader>
           }
           disablePadding>
           {
@@ -117,7 +139,16 @@ class Menu extends Component {
         </List>
         <List component="nav"
           subheader={
-            <ListSubheader component="div">Chats</ListSubheader>
+            <ListSubheader component="div">
+              <Grid container justify="space-between" alignItems="center">
+                <Grid item>Chats</Grid>
+                <Grid item>
+                  <IconButton onClick={this.handleForm("chatForm", true)}>
+                    <Add/>
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </ListSubheader>
           }
           disablePadding>
           {
@@ -145,6 +176,14 @@ class Menu extends Component {
             ))
           }
         </List>
+        {
+          groupForm &&
+          <GroupForm open={groupForm} handleForm={this.handleForm} />
+        }
+        {
+          chatForm &&
+          <ChatForm open={chatForm} handleForm={this.handleForm} />
+        }
       </div>
     );
   }

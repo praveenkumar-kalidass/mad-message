@@ -66,6 +66,16 @@ export default (state = initialState, action) => {
         return room;
       })
     };
+  case User.LOAD_GROUP:
+    return {
+      ...state,
+      groups: _.union(state.groups, [action.data])
+    };
+  case User.LOAD_CHAT:
+    return {
+      ...state,
+      chats: _.union(state.chats, [action.data])
+    };
   default:
     return state;
   }

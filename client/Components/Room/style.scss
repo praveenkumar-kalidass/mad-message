@@ -3,12 +3,17 @@
 .gis-room {
   height: calc(100% - 48px);
   overflow: auto;
+  .room-details-container {
+    background-color: $white;
+    box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
   .messages-container {
-    min-height: calc(100% - 128px);
+    min-height: calc(100% - 188px);
     padding: 20px;
-    .message-chip {
-      margin-bottom: 10px;
-    }
   }
   .message-input-container {
     background-color: $white;

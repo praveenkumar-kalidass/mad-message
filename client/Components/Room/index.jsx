@@ -1,13 +1,18 @@
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import {
+  Avatar,
   Chip,
   CircularProgress,
   Grid,
   IconButton,
-  TextField
+  TextField,
+  Typography
 } from "@material-ui/core";
-import {Send} from "@material-ui/icons";
+import {
+  Send,
+  Settings
+} from "@material-ui/icons";
 import {connect} from "react-redux";
 import Cookies from "universal-cookie";
 import _ from "lodash";
@@ -25,7 +30,9 @@ import "./style.scss";
 const mapStateToProps = (state) => ({
   loading: state.room.loading,
   room: state.room.room,
-  messages: state.room.messages
+  messages: state.room.messages,
+  members: state.room.members,
+  user: state.user.user
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -44,7 +51,8 @@ class Room extends Component {
       userId: "",
       room: {},
       messages: [],
-      message: ""
+      message: "",
+      members: {}
     };
   }
 
@@ -67,10 +75,16 @@ class Room extends Component {
   }
 
   static getDerivedStateFromProps(props) {
+    if (props.room.type === "USER") {
+      props.room.name = props.room.name
+        .replace(`${props.user.firstName} ${props.user.lastName}`, "")
+        .replace("|", "");
+    }
     return {
       loading: props.loading,
       room: props.room,
-      messages: props.messages
+      messages: props.messages,
+      members: _.groupBy(props.members, "id")
     };
   }
 
@@ -122,11 +136,24 @@ class Room extends Component {
       userId,
       room,
       messages,
-      message
+      message,
+      members
     } = this.state;
 
     return (
       <div className="gis-room">
+        {
+          !loading &&
+          <Grid container justify="space-between" alignItems="center"
+            className="room-details-container">
+            <Grid item>
+              <Typography variant="h5">{room.name}</Typography>
+            </Grid>
+            <Grid item>
+              <IconButton disabled><Settings /></IconButton>
+            </Grid>
+          </Grid>
+        }
         <div className="messages-container">
           {
             loading &&
@@ -137,14 +164,32 @@ class Room extends Component {
           {
             _.map(messages, (message) => (
               <Grid container
+                direction={message.userId === userId ? "row-reverse" : "row"}
                 key={message.id}
-                justify={message.userId === userId ? "flex-end" : "flex-start"}>
+                spacing={16}
+                alignItems="center">
                 <Grid item>
-                  <Chip
-                    className="message-chip"
-                    label={message.text}
-                    color={message.userId === userId ? "primary" : "default"}>
-                  </Chip>
+                  <Avatar
+                    src={`http://localhost:3000${members[message.userId][0].image}`} />
+                </Grid>
+                <Grid item>
+                  <Grid container direction="column"
+                    alignItems={message.userId === userId ? "flex-end" : "flex-start"}>
+                    <Grid item>
+                      <Typography variant="caption" gutterBottom>
+                        {`${members[message.userId][0].firstName} ${members[message.userId][0].lastName}`}
+                        &nbsp;&nbsp;&nbsp;&#x2022;&nbsp;&nbsp;&nbsp;
+                        {new Date(message.createdAt).toLocaleString()}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Chip
+                        className="message-chip"
+                        label={message.text}
+                        color={message.userId === userId ? "primary" : "default"}>
+                      </Chip>
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
             ))

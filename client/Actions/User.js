@@ -60,6 +60,29 @@ const pushNotification = (data) => ({
   data
 });
 
+const addRoom = (data, callback) => (dispatch) => {
+  Api.addRoom(data).then((response) => {
+    response.data.unreadMessages = [];
+    if (data.type === "GROUP") {
+      dispatch(loadGroup(response.data));
+    }
+    if (data.type === "USER") {
+      dispatch(loadChat(response.data));
+    }
+    return callback(response.data);
+  });
+};
+
+const loadGroup = (data) => ({
+  type: User.LOAD_GROUP,
+  data
+});
+
+const loadChat = (data) => ({
+  type: User.LOAD_CHAT,
+  data
+});
+
 const startLoading = () => ({
   type: User.START_USER_LOADING
 });
@@ -69,5 +92,6 @@ export {
   getUserList,
   getRooms,
   readMessages,
-  startNotifications
+  startNotifications,
+  addRoom
 };

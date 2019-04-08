@@ -13,14 +13,16 @@ class MemberDao {
   }
 
   findAllRoomUsers(roomId, userId, findCB) {
-    models.Member.findAll({
-      where: {
-        roomId,
+    let where = {roomId};
+    if (userId) {
+      where = {
+        ...where,
         userId: {
           [Op.ne]: userId
         }
-      }
-    }).then((users) => (
+      };
+    }
+    models.Member.findAll({where}).then((users) => (
       findCB(null, users)
     ), (findErr) => (
       findCB(findErr)
