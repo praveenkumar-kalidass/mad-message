@@ -1,4 +1,5 @@
 const models = require("../models");
+const Op = require("sequelize").Op;
 
 class MemberDao {
   findUserRooms(userId, findCB) {
@@ -6,6 +7,21 @@ class MemberDao {
       where: {userId}
     }).then((rooms) => (
       findCB(null, rooms)
+    ), (findErr) => (
+      findCB(findErr)
+    ));
+  }
+
+  findAllRoomUsers(roomId, userId, findCB) {
+    models.Member.findAll({
+      where: {
+        roomId,
+        userId: {
+          [Op.ne]: userId
+        }
+      }
+    }).then((users) => (
+      findCB(null, users)
     ), (findErr) => (
       findCB(findErr)
     ));

@@ -34,6 +34,38 @@ export default (state = initialState, action) => {
       groups: _.filter(action.data, {type: "GROUP"}),
       chats: _.filter(action.data, {type: "USER"})
     };
+  case User.CLEAR_READ_MESSAGES:
+    return {
+      ...state,
+      groups: _.map(state.groups, (room) => {
+        if (room.id === action.data) {
+          room.unreadMessages = [];
+        }
+        return room;
+      }),
+      chats: _.map(state.chats, (room) => {
+        if (room.id === action.data) {
+          room.unreadMessages = [];
+        }
+        return room;
+      })
+    };
+  case User.PUSH_NOTIFICATION:
+    return {
+      ...state,
+      groups: _.map(state.groups, (room) => {
+        if (room.id === action.data.roomId) {
+          room.unreadMessages = _.union(room.unreadMessages, [action.data]);
+        }
+        return room;
+      }),
+      chats: _.map(state.chats, (room) => {
+        if (room.id === action.data.roomId) {
+          room.unreadMessages = _.union(room.unreadMessages, [action.data]);
+        }
+        return room;
+      })
+    };
   default:
     return state;
   }

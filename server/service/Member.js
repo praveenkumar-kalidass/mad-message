@@ -11,6 +11,15 @@ class MemberService {
     });
   }
 
+  getRoomUsers(roomId, userId, getUsersCB) {
+    memberDao.findAllRoomUsers(roomId, userId, (findErr, users) => {
+      if (findErr) {
+        return getUsersCB(findErr);
+      }
+      return getUsersCB(null, users);
+    });
+  }
+
   addMember(data, addCB) {
     memberDao.createMember(data, (createErr, result) => {
       if (createErr) {

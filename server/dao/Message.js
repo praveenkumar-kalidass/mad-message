@@ -1,9 +1,11 @@
 const models = require("../models");
+const Op = require("sequelize").Op;
 
 class MessageDao {
   findAllMessages(roomId, findCB) {
     models.Message.findAll({
-      where: {roomId}
+      where: {roomId},
+      order: ["createdAt"]
     }).then((messages) => (
       findCB(null, messages)
     ), (findErr) => (
@@ -11,11 +13,14 @@ class MessageDao {
     ));
   }
 
-  findUnreadMessages(roomId, findCB) {
+  findUnreadMessages(roomId, userId, findCB) {
     models.Message.findAll({
       where: {
         roomId,
-        read: false
+        read: false,
+        userId: {
+          [Op.ne]: userId
+        }
       }
     }).then((messages) => (
       findCB(null, messages)
@@ -29,6 +34,20 @@ class MessageDao {
       createCB(null, message)
     ), (createErr) => (
       createCB(createErr)
+    ));
+  }
+
+  updateReadMessage(data, updateCB) {
+    models.Message.update({
+      read: true
+    }, {
+      where: {
+        id: data.id
+      }
+    }).then((message) => (
+      updateCB(null, message)
+    ), (updateErr) => (
+      updateCB(updateErr)
     ));
   }
 }

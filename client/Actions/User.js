@@ -1,5 +1,6 @@
 import Api from "../Api/User";
 import User from "../ActionTypes/User";
+import socket from "../Api/Socket";
 
 const getUserDetail = (id) => (dispatch) => {
   Api.getUserDetail(id).then((response) => {
@@ -36,6 +37,29 @@ const loadRooms = (data) => ({
   data
 });
 
+const readMessages = (roomId, data) => (dispatch) => {
+  Api.updateMessages(data).then(() => {
+    dispatch(clearReadMessages(roomId));
+  });
+};
+
+const clearReadMessages = (data) => ({
+  type: User.CLEAR_READ_MESSAGES,
+  data
+});
+
+const startNotifications = (userId) => (dispatch) => {
+  socket.emit("subscribe", userId);
+  socket.on("notification", (data) => {
+    dispatch(pushNotification(data));
+  });
+};
+
+const pushNotification = (data) => ({
+  type: User.PUSH_NOTIFICATION,
+  data
+});
+
 const startLoading = () => ({
   type: User.START_USER_LOADING
 });
@@ -43,5 +67,7 @@ const startLoading = () => ({
 export {
   getUserDetail,
   getUserList,
-  getRooms
+  getRooms,
+  readMessages,
+  startNotifications
 };

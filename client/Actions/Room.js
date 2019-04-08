@@ -2,10 +2,11 @@ import Api from "../Api/Room";
 import Room from "../ActionTypes/Room";
 import socket from "../Api/Socket";
 
-const getRoomDetails = (id) => (dispatch) => {
+const getRoomDetails = (id, callback) => (dispatch) => {
   dispatch(startLoading());
   Api.getRoomDetails(id).then((response) => {
     dispatch(loadRoomDetails(response.data));
+    return callback();
   });
 };
 
@@ -14,10 +15,11 @@ const loadRoomDetails = (data) => ({
   data
 });
 
-const startRoom = (roomId) => (dispatch) => {
+const startRoom = (roomId, callback) => (dispatch) => {
   socket.emit("subscribe", roomId);
   socket.on("message", (data) => {
     dispatch(loadRoomMessage(data));
+    return callback();
   });
 };
 

@@ -9,5 +9,8 @@ export default {
   ),
   getRooms: (userId) => (
     axios.get(`/api/room/list/${userId}`)
+  ),
+  updateMessages: (data) => (
+    axios.post("/api/message/read", data)
   )
 };

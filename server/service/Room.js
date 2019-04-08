@@ -7,18 +7,18 @@ const messageService = new MessageService();
 const memberService = new MemberService();
 
 class RoomService {
-  static loadRoomDetails(rooms, loadDetailsCB) {
+  static loadRoomDetails(rooms, userId, loadDetailsCB) {
     async.map(rooms, (room, asyncCB) => {
       async.parallel({
         roomDetail: roomDao.findRoom.bind(null, room.roomId),
-        messageCount: messageService.getUnreadMessages.bind(null, room.roomId)
+        unreadMessages: messageService.getUnreadMessages.bind(null, room.roomId, userId)
       }, (parallelErr, result) => {
         if (parallelErr) {
           return asyncCB(parallelErr);
         }
         return asyncCB(null, {
           ...result.roomDetail.dataValues,
-          messageCount: result.messageCount.length
+          unreadMessages: result.unreadMessages
         });
       });
     }, (mapErr, result) => {
@@ -32,6 +32,9 @@ class RoomService {
   getUserRooms(userId, getCB) {
     async.waterfall([
       async.apply(memberService.getUserRooms, userId),
+      (rooms, passIdCB) => (
+        passIdCB(null, rooms, userId)
+      ),
       RoomService.loadRoomDetails
     ], (waterfallErr, result) => {
       if (waterfallErr) {

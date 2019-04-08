@@ -17,7 +17,11 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import Cookies from "universal-cookie";
 import _ from "lodash";
-import {getRooms} from "../../Actions/User";
+import {
+  getRooms,
+  readMessages,
+  startNotifications
+} from "../../Actions/User";
 import "./style.scss";
 
 const mapStateToProps = (state) => ({
@@ -28,7 +32,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getRooms: (userId) => { dispatch(getRooms(userId)) }
+  getRooms: (userId) => { dispatch(getRooms(userId)) },
+  readMessages: (roomId, data) => { dispatch(readMessages(roomId, data)) },
+  startNotifications: (userId) => { dispatch(startNotifications(userId)) }
 });
 
 class Menu extends Component {
@@ -44,6 +50,7 @@ class Menu extends Component {
   componentDidMount() {
     const cookies = new Cookies();
     this.props.getRooms(cookies.get("mad").userId);
+    this.props.startNotifications(cookies.get("mad").userId);
   }
 
   static getDerivedStateFromProps(props) {
@@ -62,8 +69,11 @@ class Menu extends Component {
     };
   }
 
-  goToRoom = (roomId) => () => {
-    this.props.history.push(`/room/${roomId}`);
+  goToRoom = (room) => () => {
+    if (room.unreadMessages.length) {
+      this.props.readMessages(room.id, room.unreadMessages);
+    }
+    this.props.history.push(`/room/${room.id}`);
   }
 
   render() {
@@ -90,7 +100,7 @@ class Menu extends Component {
             _.map(groups, (group) => (
               <ListItem
                 key={group.id}
-                onClick={this.goToRoom(group.id)}
+                onClick={this.goToRoom(group)}
                 className="menu-item"
                 button>
                 <ListItemAvatar>
@@ -98,8 +108,8 @@ class Menu extends Component {
                 </ListItemAvatar>
                 <ListItemText primary={group.name} />
                 {
-                  !!group.messageCount &&
-                  <Chip label={group.messageCount} color="primary"></Chip>
+                  !!group.unreadMessages.length &&
+                  <Chip label={group.unreadMessages.length} color="primary"></Chip>
                 }
               </ListItem>
             ))
@@ -120,7 +130,7 @@ class Menu extends Component {
             _.map(chats, (chat) => (
               <ListItem
                 key={chat.id}
-                onClick={this.goToRoom(chat.id)}
+                onClick={this.goToRoom(chat)}
                 className="menu-item"
                 button>
                 <ListItemAvatar>
@@ -128,8 +138,8 @@ class Menu extends Component {
                 </ListItemAvatar>
                 <ListItemText primary={chat.name} />
                 {
-                  !!chat.messageCount &&
-                  <Chip label={chat.messageCount} color="primary"></Chip>
+                  !!chat.unreadMessages.length &&
+                  <Chip label={chat.unreadMessages.length} color="primary"></Chip>
                 }
               </ListItem>
             ))
